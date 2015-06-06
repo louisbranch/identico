@@ -8,8 +8,7 @@ import (
 
 func Classic(mask image.Image, bg, fg color.Color) image.Image {
 	bounds := mask.Bounds()
-	w, h := bounds.Max.X, bounds.Max.Y
-	bgimg := FillBackground(w, h, bg)
+	bgimg := FillBackground(bounds, bg)
 	fgimg := ReplaceMask(mask, fg)
 
 	dst := image.NewNRGBA(bounds)
@@ -18,9 +17,9 @@ func Classic(mask image.Image, bg, fg color.Color) image.Image {
 	return dst
 }
 
-func FillBackground(width, height int, col color.Color) image.Image {
-	img := image.NewNRGBA(image.Rect(0, 0, width, height))
-	draw.Draw(img, img.Bounds(), &image.Uniform{col}, image.ZP, draw.Src)
+func FillBackground(bounds image.Rectangle, col color.Color) image.Image {
+	img := image.NewNRGBA(bounds)
+	draw.Draw(img, bounds, &image.Uniform{col}, image.ZP, draw.Src)
 	return img
 }
 
