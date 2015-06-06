@@ -28,13 +28,19 @@ func ReplaceMask(mask image.Image, col color.Color) image.Image {
 	dst := image.NewNRGBA(bounds)
 	w, h := bounds.Max.X, bounds.Max.Y
 	r, g, b, _ := col.RGBA()
+	rgba := color.NRGBA{
+		uint8(r >> 8),
+		uint8(g >> 8),
+		uint8(b >> 8),
+		0,
+	}
 
 	for x := 0; x < w; x++ {
 		for y := 0; y < h; y++ {
 			pixel := mask.At(x, y)
 			_, _, _, alpha := pixel.RGBA()
 			if alpha != 0 {
-				rgba := color.NRGBA{shift(r), shift(g), shift(b), shift(alpha)}
+				rgba.A = uint8(alpha >> 8)
 				dst.Set(x, y, rgba)
 			} else {
 				dst.Set(x, y, pixel)
@@ -42,8 +48,4 @@ func ReplaceMask(mask image.Image, col color.Color) image.Image {
 		}
 	}
 	return dst
-}
-
-func shift(v uint32) uint8 {
-	return uint8(v >> 8)
 }
